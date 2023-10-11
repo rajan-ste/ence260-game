@@ -19,10 +19,23 @@
 #define RIGHT 1
 #define LEFT_WALL 0
 #define RIGHT_WALL 6
+#define NUM_ROWS 7
+
+
+// Array of rows for easy manipulation
+static const pio_t rows[NUM_ROWS] = {
+    LEDMAT_ROW1_PIO,
+    LEDMAT_ROW2_PIO,
+    LEDMAT_ROW3_PIO,
+    LEDMAT_ROW4_PIO,
+    LEDMAT_ROW5_PIO,
+    LEDMAT_ROW6_PIO,
+    LEDMAT_ROW7_PIO
+};
 
 
 void select_led_init(void);
-void check_select_edge(void);
+// void check_select_edge(void);
 void move_select_led(void);
 
 #endif

@@ -1,5 +1,4 @@
 #include "system.h"
-#include "pio.h"
 #include "select.h"
 
 
@@ -12,8 +11,8 @@ int main (void)
 
     while (1)
     {
-        select_led_init();
-        navswitch_update();
+        select_led_init(); // init selector LEDs
+        move_select_led(); 
 
 
 
