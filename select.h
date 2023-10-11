@@ -5,6 +5,11 @@
     last edited 
 */
 
+#include "system.h"
+#include "pio.h"
+#include "navswitch.h"
+
+
 #ifndef SELECT_H
 #define SELECT_H
 
@@ -14,3 +19,10 @@
 #define RIGHT 1
 #define LEFT_WALL 0
 #define RIGHT_WALL 6
+
+
+void select_led_init(void);
+void check_select_edge(void);
+void move_select_led(void);
+
+#endif
