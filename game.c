@@ -1,8 +1,12 @@
 #include "system.h"
 #include "select.h"
+#include "display.h"
 
 
-
+void start_state(void) 
+{
+    led_init();
+}
 
 int main (void)
 {
@@ -13,8 +17,6 @@ int main (void)
     {
         select_led_init(); // init selector LEDs
         move_select_led(); 
-
-
 
     }
 }
