@@ -4,7 +4,7 @@
     @brief  LED matrix driver.
 */
 
-#include "display.h"
+#include "game_display.h"
 
 
 /** Define PIO pins driving LED matrix rows.  */
@@ -74,4 +74,25 @@ void ledmat_display_column (uint8_t pattern, uint8_t col)
     col_prev = col;
 }
 
+
+void scroll_text (char* text)
+{
+    tinygl_font_set (&font3x5_1);
+    tinygl_text_speed_set (10);
+    tinygl_text (text);
+    tinygl_text_mode_set (TINYGL_TEXT_MODE_SCROLL);
+    tinygl_update();
+}
+
+
+/** Flash a single character onto the screen:
+    @param character, the character to display */
+void display_character (char character)
+{
+    char buffer[2];
+    tinygl_font_set (&font3x5_1);
+    buffer[0] = character;
+    buffer[1] = '\0';
+    tinygl_text (buffer);
+}
 

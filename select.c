@@ -50,8 +50,6 @@ void move_select_led(void)
                 current_row++;
             }
 
-      
-
             pio_config_set(LEDMAT_COL1_PIO, PIO_OUTPUT_LOW);
             pacer_wait();
             // Turn ON (low) the new current row LED

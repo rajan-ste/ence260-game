@@ -9,7 +9,7 @@
 #include "pio.h"
 #include "navswitch.h"
 #include "pacer.h"
-#include "display.h"
+#include "game_display.h"
 
 
 #ifndef SELECT_H
