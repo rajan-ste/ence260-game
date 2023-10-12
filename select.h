@@ -8,6 +8,8 @@
 #include "system.h"
 #include "pio.h"
 #include "navswitch.h"
+#include "pacer.h"
+#include "display.h"
 
 
 #ifndef SELECT_H
@@ -17,9 +19,11 @@
 
 #define LEFT -1
 #define RIGHT 1
-#define LEFT_WALL 0
-#define RIGHT_WALL 6
+#define LEFT_WALL 1
+#define RIGHT_WALL 7
 #define NUM_ROWS 7
+
+#define PACER_RATE 100
 
 
 // Array of rows for easy manipulation
@@ -37,5 +41,6 @@ static const pio_t rows[NUM_ROWS] = {
 void select_led_init(void);
 // void check_select_edge(void);
 void move_select_led(void);
+void turn_select_off(void); 
 
 #endif

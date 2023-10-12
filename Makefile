@@ -16,29 +16,33 @@ all: game.out
 
 
 # Compile: create object files from C source files.
-game.o: game.c select.h ../../drivers/avr/system.h
+game.o: game.c select.h ../../drivers/avr/system.h display.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 system.o: ../../drivers/avr/system.c ../../drivers/avr/system.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
-select.o: select.c select.h ../../drivers/avr/pio.h ../../drivers/navswitch.h
+select.o: select.c select.h display.h ../../drivers/avr/pio.h ../../drivers/navswitch.h ../../utils/pacer.h ../../drivers/avr/pio.h 
 	$(CC) -c $(CFLAGS) $< -o $@
 
 pio.o: ../../drivers/avr/pio.c ../../drivers/avr/pio.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
-navswitch.o: ../../drivers/navswitch.c ../../drivers/navswitch.h
+navswitch.o: ../../drivers/navswitch.c ../../drivers/navswitch.h ../../drivers/avr/system.h ../../drivers/avr/delay.h ../../drivers/avr/pio.h
+	$(CC) -c $(CFLAGS) $< -o $@
+
+display.o: display.c display.h ../../drivers/avr/pio.h ../../drivers/avr/system.h
+	$(CC) -c $(CFLAGS) $< -o $@
+
+pacer.o: ../../utils/pacer.c ../../utils/pacer.h ../../drivers/avr/system.h ../../drivers/avr/timer.h
+	$(CC) -c $(CFLAGS) $< -o $@
+
+timer.o: ../../drivers/avr/timer.c ../../drivers/avr/timer.h ../../drivers/avr/system.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 
-
-
-
-
-
 # Link: create ELF output file from object files.
-game.out: game.o system.o select.o pio.o navswitch.o
+game.out: game.o system.o select.o pio.o navswitch.o display.o pacer.o timer.o
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 	$(SIZE) $@
 

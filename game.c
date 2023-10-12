@@ -3,20 +3,22 @@
 #include "display.h"
 
 
-void start_state(void) 
+/* void start_state(void) 
 {
     led_init();
-}
+} */
 
 int main (void)
 {
     system_init ();
+    ledmat_init();
+    
 
 
     while (1)
     {
-        select_led_init(); // init selector LEDs
-        move_select_led(); 
-
+        select_led_init();
+        navswitch_init();
+        move_select_led();
     }
 }
