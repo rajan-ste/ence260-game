@@ -61,10 +61,13 @@ usart1.o: ../../drivers/avr/usart1.c ../../drivers/avr/system.h ../../drivers/av
 prescale.o: ../../drivers/avr/prescale.c ../../drivers/avr/prescale.h ../../drivers/avr/system.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
+communications.o: communications.c communications.h ../../drivers/avr/ir_uart.h
+	$(CC) -c $(CFLAGS) $< -o $@
+
 
 
 # Link: create ELF output file from object files.
-game.out: game.o system.o select.o pio.o navswitch.o game_display.o pacer.o timer.o tinygl.o font.o display.o ir_uart.o timer0.o usart1.o prescale.o
+game.out: game.o system.o select.o pio.o navswitch.o game_display.o pacer.o timer.o tinygl.o font.o display.o ir_uart.o timer0.o usart1.o prescale.o communications.o
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 	$(SIZE) $@
 
