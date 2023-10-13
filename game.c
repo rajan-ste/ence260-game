@@ -11,16 +11,16 @@
 #define TINYGL_RATE 500
 
 
+
 typedef struct {
     uint8_t mode;
 } state_t;
 
-    state_t state = {
-        START,
-        SELECT
-    };
+state_t state = {
+    START
+};
 
-static void start_menu(state_t state) 
+static void start_menu(state_t* state) 
 {   
     // scroll the start menu display text
     tinygl_update();
@@ -28,15 +28,15 @@ static void start_menu(state_t state)
     navswitch_update();
 
     if (navswitch_push_event_p(NAVSWITCH_PUSH)) {
-        ir_uart_putc("W"); 
-        state.mode = SELECT;
+        ir_uart_putc('W'); 
+        state->mode = SELECT;
     }
 
     if (ir_uart_read_ready_p()) {
         char newchar = ir_uart_getc();
-        if (newchar = "W") {
+        if (newchar == 'W') {
             display_character (newchar);
-            state.mode = WAIT;
+            state->mode = WAIT;
         }
     }
 }
@@ -59,7 +59,7 @@ int main (void)
         tinygl_update();
         switch(state.mode) {
             case START :
-                start_menu(state);
+                start_menu(&state);
                 
                 break;
         }
