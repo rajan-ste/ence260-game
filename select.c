@@ -16,7 +16,7 @@ void select_led_init(void)
 void move_select_led(void) 
 {
     // initialise pacer
-    pacer_init (PACER_RATE);
+    pacer_init (500);
     
 
 

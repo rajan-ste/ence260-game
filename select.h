@@ -23,7 +23,7 @@
 #define RIGHT_WALL 7
 #define NUM_ROWS 7
 
-#define PACER_RATE 100
+
 
 
 // Array of rows for easy manipulation
