@@ -41,6 +41,17 @@ static void start_menu(state_t* state)
     }
 }
 
+static void select_mode(state_t* state)
+{
+    
+}
+
+static void wait_mode(state_t* state)
+{
+    
+}
+
+
 
 int main (void)
 {
@@ -60,7 +71,6 @@ int main (void)
         switch(state.mode) {
             case START :
                 start_menu(&state);
-                
                 break;
         }
     }
