@@ -43,14 +43,40 @@ static void start_menu(state_t* state)
 
 static void select_mode(state_t* state)
 {
-    
+    state->mode = WAIT;
 }
 
+// if you turn change to select state
 static void wait_mode(state_t* state)
 {
-    
+    if (ir_uart_read_ready_p()) {
+        char newchar = ir_uart_getc();
+        if (newchar == 'W') {
+            display_character (newchar);
+            state->mode = SELECT;
+        }
+    }
 }
 
+static void move_selector(pointer to selecter)
+{
+    navswitch_update();
+
+    // change to wait state after turn taken
+    if(navswitch_push_event_p(NAVSWITCH_PUSH)) {
+        state->mode = WAIT;
+    }
+
+    // move selecter right
+    if(navswitch_push_event_p(NAVSWITCH_NORTH)) {
+        select_right(select);
+    }
+
+    // move selecter left
+    if(navswitch_push_event_p(NAVSWITCH_SOUTH)) {
+        select_left(select);
+    }
+}
 
 
 int main (void)
