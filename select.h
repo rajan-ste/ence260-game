@@ -20,8 +20,9 @@
 #define LEFT -1
 #define RIGHT 1
 #define LEFT_WALL 1
-#define RIGHT_WALL 7
+#define RIGHT_WALL 64
 #define NUM_ROWS 7
+#define COL 0
 
 
 
@@ -38,9 +39,7 @@ static const pio_t rows[NUM_ROWS] = {
 };
 
 
-void select_led_init(void);
-// void check_select_edge(void);
-void move_select_led(void);
-void turn_select_off(void); 
+void move_select_left(uint8_t *bitmap);
+void move_select_right(uint8_t *bitmap);
 
 #endif

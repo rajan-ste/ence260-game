@@ -10,7 +10,7 @@
 #define PACER_RATE 500
 #define TINYGL_RATE 500
 
-
+static uint8_t curr_select = 0x40;
 
 typedef struct {
     uint8_t mode;
@@ -28,8 +28,9 @@ static void start_menu(state_t* state)
     navswitch_update();
 
     if (navswitch_push_event_p(NAVSWITCH_PUSH)) {
-        ir_uart_putc('W'); 
+        // ir_uart_putc('W'); 
         state->mode = SELECT;
+        
     }
 
     if (ir_uart_read_ready_p()) {
@@ -58,7 +59,7 @@ static void wait_mode(state_t* state)
     }
 }
 
-static void move_selector(pointer to selecter)
+static void move_selector(state_t* state, uint8_t* curr_select)
 {
     navswitch_update();
 
@@ -68,13 +69,13 @@ static void move_selector(pointer to selecter)
     }
 
     // move selecter right
-    if(navswitch_push_event_p(NAVSWITCH_NORTH)) {
-        select_right(select);
+    if(navswitch_push_event_p(NAVSWITCH_SOUTH)) {
+        move_select_right(curr_select);
     }
 
     // move selecter left
-    if(navswitch_push_event_p(NAVSWITCH_SOUTH)) {
-        select_left(select);
+    if(navswitch_push_event_p(NAVSWITCH_NORTH)) {
+        move_select_left(curr_select);
     }
 }
 
@@ -86,6 +87,8 @@ int main (void)
     pacer_init(PACER_RATE);
     tinygl_init (TINYGL_RATE);
     ir_uart_init();
+    navswitch_init();
+
 
     // start menu display text
     scroll_text("PRESS TO START \0");
@@ -93,10 +96,13 @@ int main (void)
     while (1)
     {
         pacer_wait();
-        tinygl_update();
         switch(state.mode) {
             case START :
                 start_menu(&state);
+                break;
+            case SELECT :
+                tinygl_clear();
+                move_selector(&state, &curr_select);
                 break;
         }
     }

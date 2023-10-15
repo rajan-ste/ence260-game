@@ -23,9 +23,9 @@ void ledmat_init (void);
     @param pattern bit pattern to display for selected column
     @param col selected column.  */
 void ledmat_display_column (uint8_t pattern, uint8_t col);
-
 void scroll_text (char* text);
 void display_character (char character);
+uint8_t update_display(uint8_t bitmap[], uint8_t col);
 
 
 

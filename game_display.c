@@ -96,3 +96,9 @@ void display_character (char character)
     tinygl_text (buffer);
 }
 
+uint8_t update_display(uint8_t bitmap[], uint8_t col) {
+    ledmat_display_column(bitmap[col], col);
+    return (col + 1) % LEDMAT_COLS_NUM;
+}
+
+
