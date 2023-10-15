@@ -16,7 +16,7 @@ all: game.out
 
 
 # Compile: create object files from C source files.
-game.o: game.c select.h ../../drivers/avr/system.h game_display.h ../../drivers/avr/ir_uart.h
+game.o: game.c board.h select.h ../../drivers/avr/system.h game_display.h ../../drivers/avr/ir_uart.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 system.o: ../../drivers/avr/system.c ../../drivers/avr/system.h
@@ -61,10 +61,12 @@ usart1.o: ../../drivers/avr/usart1.c ../../drivers/avr/system.h ../../drivers/av
 prescale.o: ../../drivers/avr/prescale.c ../../drivers/avr/prescale.h ../../drivers/avr/system.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
+board.o: board.c board.h
+	$(CC) -c $(CFLAGS) $< -o $@
 
 
 # Link: create ELF output file from object files.
-game.out: game.o system.o select.o pio.o navswitch.o game_display.o pacer.o timer.o tinygl.o font.o display.o ir_uart.o timer0.o usart1.o prescale.o
+game.out: game.o system.o select.o pio.o navswitch.o game_display.o pacer.o timer.o tinygl.o font.o display.o ir_uart.o timer0.o usart1.o prescale.o board.o
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 	$(SIZE) $@
 
