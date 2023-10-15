@@ -95,9 +95,7 @@ int main (void)
 
     while (1)
     {
-
         pacer_wait();
-        tinygl_update();
         switch(state.mode) {
             case START :
                 start_menu(&state);

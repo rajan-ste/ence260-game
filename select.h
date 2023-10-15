@@ -20,7 +20,7 @@
 #define LEFT -1
 #define RIGHT 1
 #define LEFT_WALL 1
-#define RIGHT_WALL 60
+#define RIGHT_WALL 64
 #define NUM_ROWS 7
 #define COL 0
 
