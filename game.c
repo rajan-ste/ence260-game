@@ -28,7 +28,7 @@ static void start_menu(state_t* state)
     navswitch_update();
 
     if (navswitch_push_event_p(NAVSWITCH_PUSH)) {
-        // ir_uart_putc('W'); 
+        ir_uart_putc('W'); 
         state->mode = SELECT;
         
     }
@@ -42,18 +42,14 @@ static void start_menu(state_t* state)
     }
 }
 
-static void select_mode(state_t* state)
-{
-    state->mode = WAIT;
-}
+
 
 // if you turn change to select state
 static void wait_mode(state_t* state)
 {
     if (ir_uart_read_ready_p()) {
         char newchar = ir_uart_getc();
-        if (newchar == 'W') {
-            display_character (newchar);
+        if (newchar == 'S') {
             state->mode = SELECT;
         }
     }
@@ -65,6 +61,8 @@ static void move_selector(state_t* state, uint8_t* curr_select)
 
     // change to wait state after turn taken
     if(navswitch_push_event_p(NAVSWITCH_PUSH)) {
+        ledmat_display_column(0x00, COL);
+        ir_uart_putc('S'); 
         state->mode = WAIT;
     }
 
@@ -103,6 +101,9 @@ int main (void)
             case SELECT :
                 tinygl_clear();
                 move_selector(&state, &curr_select);
+                break;
+            case WAIT :
+                wait_mode(&state);
                 break;
         }
     }
