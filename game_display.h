@@ -21,9 +21,14 @@
 
 
 
+
 void scroll_text (char* text);
+void step_text (char* text);
 void display_character (char character);
 void display_curr_select(uint8_t* curr_select);
+void display_update (void);
+void ledmat_display_column (uint8_t row_pattern, uint8_t current_column);
+
 
 
 #endif

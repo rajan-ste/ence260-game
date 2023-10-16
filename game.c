@@ -30,16 +30,21 @@ static void start_menu(state_t* state)
    
 
     if (navswitch_push_event_p(NAVSWITCH_PUSH)) {
-        ir_uart_putc('W'); 
-        state->mode = SELECT;
+        ir_uart_putc('R'); 
+        state->mode = SELECT; // change mode to select
+        step_text(""); // change tinygl to step
+        tinygl_clear();
     }
 
     if (ir_uart_read_ready_p()) {
         char newchar = ir_uart_getc();
-        if (newchar == 'W') {
+        if (newchar == 'R') {
             display_character (newchar);
             if (navswitch_push_event_p(NAVSWITCH_PUSH)) {
                 state->mode = SELECT;
+                step_text("");
+                tinygl_clear();
+                
             }
         }
     }
@@ -52,29 +57,26 @@ static void start_menu(state_t* state)
 static void move_selector(state_t* state, uint8_t* curr_select)
 {
     navswitch_update();
-    tinygl_update ();
+    tinygl_update();
     
     
-    
-
     // change to wait state after turn taken
     /* if(navswitch_push_event_p(NAVSWITCH_PUSH)) {
         
     } */
 
     // move selecter right
-    if(navswitch_push_event_p(NAVSWITCH_EAST)) {
-        char test = 'P'
-        display_character(test);
-        select_move_right(curr_select);
-       
+    if (navswitch_push_event_p(NAVSWITCH_EAST)) {
+        display_character('P');
+        // select_move_right(curr_select);
+    }
+    // move selecter left
+    if (navswitch_push_event_p(NAVSWITCH_WEST)) {
+        display_character('R');
     }
 
-    // move selecter left
-    if(navswitch_push_event_p(NAVSWITCH_WEST)) {
-        display_character('R');
-        select_move_left(curr_select);
-       
+    if (navswitch_push_event_p(NAVSWITCH_SOUTH)) {
+        display_character('S');
     }
 }
 
@@ -101,7 +103,6 @@ int main (void)
                 start_menu(&state);
                 break;
             case SELECT :
-                tinygl_clear();
                 move_selector(&state, &curr_select);
                 break;
         }
