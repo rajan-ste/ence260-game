@@ -34,11 +34,13 @@ static void start_menu(state_t* state)
         state->mode = SELECT;
     }
 
-    else if (ir_uart_read_ready_p()) {
+    if (ir_uart_read_ready_p()) {
         char newchar = ir_uart_getc();
         if (newchar == 'W') {
             display_character (newchar);
-            state->mode = SELECT;
+            if (navswitch_push_event_p(NAVSWITCH_PUSH)) {
+                state->mode = SELECT;
+            }
         }
     }
 }
@@ -51,7 +53,7 @@ static void move_selector(state_t* state, uint8_t* curr_select)
 {
     navswitch_update();
     tinygl_update ();
-    display_update();
+    
     
     
 
@@ -62,7 +64,8 @@ static void move_selector(state_t* state, uint8_t* curr_select)
 
     // move selecter right
     if(navswitch_push_event_p(NAVSWITCH_EAST)) {
-        display_character('P');
+        char test = 'P'
+        display_character(test);
         select_move_right(curr_select);
        
     }
