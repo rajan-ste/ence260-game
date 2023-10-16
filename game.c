@@ -1,16 +1,17 @@
-#include "system.h"
+#include "../../drivers/avr/system.h"
 #include "select.h"
 #include "game_display.h"
 #include "ir_uart.h"
+#include "../../drivers/display.h"
 
 
 #define START 0
 #define SELECT 1
-#define WAIT 2
 #define PACER_RATE 500
 #define TINYGL_RATE 500
 
-static uint8_t curr_select = 0x40;
+
+static uint8_t curr_select = PAPER;
 
 typedef struct {
     uint8_t mode;
@@ -26,54 +27,51 @@ static void start_menu(state_t* state)
     tinygl_update();
     // checking for navswitch press
     navswitch_update();
+   
 
     if (navswitch_push_event_p(NAVSWITCH_PUSH)) {
         ir_uart_putc('W'); 
         state->mode = SELECT;
-        
     }
 
-    if (ir_uart_read_ready_p()) {
+    else if (ir_uart_read_ready_p()) {
         char newchar = ir_uart_getc();
         if (newchar == 'W') {
             display_character (newchar);
-            state->mode = WAIT;
-        }
-    }
-}
-
-
-
-// if you turn change to select state
-static void wait_mode(state_t* state)
-{
-    if (ir_uart_read_ready_p()) {
-        char newchar = ir_uart_getc();
-        if (newchar == 'S') {
             state->mode = SELECT;
         }
     }
 }
 
+
+
+
+
 static void move_selector(state_t* state, uint8_t* curr_select)
 {
     navswitch_update();
+    tinygl_update ();
+    display_update();
+    
+    
 
     // change to wait state after turn taken
-    if(navswitch_push_event_p(NAVSWITCH_PUSH)) {
-        ledmat_display_column(0x00, COL);
-        ir_uart_putc('S'); 
-        state->mode = WAIT;
-    }
+    /* if(navswitch_push_event_p(NAVSWITCH_PUSH)) {
+        
+    } */
 
     // move selecter right
-    if(navswitch_push_event_p(NAVSWITCH_SOUTH)) {
-        move_select_right(curr_select);
+    if(navswitch_push_event_p(NAVSWITCH_EAST)) {
+        display_character('P');
+        select_move_right(curr_select);
+       
     }
 
     // move selecter left
-    if(navswitch_push_event_p(NAVSWITCH_NORTH)) {
-        move_select_left(curr_select);
+    if(navswitch_push_event_p(NAVSWITCH_WEST)) {
+        display_character('R');
+        select_move_left(curr_select);
+       
     }
 }
 
@@ -86,6 +84,7 @@ int main (void)
     tinygl_init (TINYGL_RATE);
     ir_uart_init();
     navswitch_init();
+    
 
 
     // start menu display text
@@ -101,9 +100,6 @@ int main (void)
             case SELECT :
                 tinygl_clear();
                 move_selector(&state, &curr_select);
-                break;
-            case WAIT :
-                wait_mode(&state);
                 break;
         }
     }

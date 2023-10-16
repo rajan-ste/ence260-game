@@ -15,17 +15,15 @@
 #ifndef SELECT_H
 #define SELECT_H
 
-#include "system.h"
 
-#define LEFT -1
-#define RIGHT 1
+
 #define LEFT_WALL 1
 #define RIGHT_WALL 64
 #define NUM_ROWS 7
 #define COL 0
-
-
-
+#define PAPER 1
+#define SCISSORS 2
+#define ROCK 3
 
 // Array of rows for easy manipulation
 static const pio_t rows[NUM_ROWS] = {
@@ -38,8 +36,7 @@ static const pio_t rows[NUM_ROWS] = {
     LEDMAT_ROW7_PIO
 };
 
-
-void move_select_left(uint8_t *bitmap);
-void move_select_right(uint8_t *bitmap);
+void select_move_right(uint8_t *curr_select);
+void select_move_left(uint8_t *curr_select);
 
 #endif
