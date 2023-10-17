@@ -21,9 +21,9 @@
 #define RIGHT_WALL 64
 #define NUM_ROWS 7
 #define COL 0
-#define PAPER 1
-#define SCISSORS 2
-#define ROCK 3
+#define PAPER 'P'
+#define SCISSORS 'S'
+#define ROCK 'R'
 
 // Array of rows for easy manipulation
 static const pio_t rows[NUM_ROWS] = {
