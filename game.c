@@ -13,6 +13,7 @@
 #define WAITING 4
 #define PACER_RATE 500
 #define TINYGL_RATE 500
+#define DEFAULT 7
 
 
 
@@ -27,7 +28,7 @@ typedef struct {
 state_t state = {
     START,
     PAPER,
-    PAPER,
+    DEFAULT,
     IDLE
 };
 
@@ -68,50 +69,42 @@ static void move_selector(state_t* state)
     tinygl_update();
    
 
-    // static uint8_t count = 0;
-    char curr_state = 'P';
 
     // display P and set current action to PAPER
     if (navswitch_push_event_p((NAVSWITCH_NORTH)) && state->comms == IDLE) {
-        curr_state = 'P';
         state->p1_action = PAPER;
-        display_character(curr_state);
+        display_character(state->p1_action);
         
     }
 
      // display S and set current action to SCISSORS
     if (navswitch_push_event_p(NAVSWITCH_EAST) && state->comms == IDLE) {
-        curr_state = 'S';
         state->p1_action = SCISSORS;
-        display_character(curr_state);
+        display_character(state->p1_action);
     }
 
 
     // display R and set current action to ROCK
     if (navswitch_push_event_p(NAVSWITCH_SOUTH) && state->comms == IDLE) {
-        curr_state = 'R';
         state->p1_action = ROCK;
-        display_character(curr_state);
+        display_character(state->p1_action);
     }
 
 
-    if (navswitch_push_event_p(NAVSWITCH_PUSH)) {
-        if (state->p1_action == ROCK){
+    if (navswitch_push_event_p(NAVSWITCH_PUSH) && state->comms == IDLE) {
+        if (state->p1_action == ROCK) { 
             ir_uart_putc('R');
         }
-        if (state->p1_action == PAPER){
+        if (state->p1_action == PAPER) {
             ir_uart_putc('P');
         }
-        if (state->p1_action == SCISSORS){
+        if (state->p1_action == SCISSORS) {
             ir_uart_putc('S');
         }
 
-        state->comms = WAITING;
-        
-    }
-
-    if (state->comms == WAITING && ir_uart_read_ready_p()) {
         state->mode = FINAL;
+        tinygl_clear();
+        
     }
 
 
@@ -122,28 +115,47 @@ void result_mode(state_t* state)
 {
 
     tinygl_update();
+    char player2 = 'Z';
+    
 
     if (ir_uart_read_ready_p()) {
-        char player2 = ir_uart_getc();
-        
-        if ((player2 == 'P') || (player2 == 'S' )|| (player2 == 'R')) {
+
+        char player2_recv = ir_uart_getc();
+        player2 = player2_recv;
+
+        if (player2 == 'P') {
+            state->p2_action = PAPER;
             
-            if (check_winner(state->p1_action, player2) == 1 || ir_uart_getc() == 'L') {
-                scroll_text("WINNER");
-                ir_uart_putc('W');
 
-            } else if (check_winner(state->p1_action, player2) == -1 || ir_uart_getc() == 'W') {
-                scroll_text("LOSER");
-                ir_uart_putc('L');
+        } else if (player2 == 'S') {
+            state->p2_action = SCISSORS;
+           
 
-            } else {
-                scroll_text("DRAW");
-            }
-
-        
+        } else if (player2 == 'R') {
+            state->p2_action = ROCK;
 
         }
+
+       // display_character(state->p2_action);
+
+        if (check_winner(state->p1_action, state->p2_action) == 1) {
+            scroll_text("WINNER");
+            // display_character('W');
+            
+
+        } else if (check_winner(state->p1_action, state->p2_action) == -1) {
+            scroll_text("LOSER");
+            // display_character('L');
+            
+
+        } else if (check_winner(state->p1_action, state->p2_action) == 0) {
+            scroll_text("DRAW");
+            // display_character('D');
+
+        } 
+
     }
+    
 }
 
 

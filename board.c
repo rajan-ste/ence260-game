@@ -8,27 +8,44 @@
 #include "board.h"
 
 
-
 int8_t check_winner(char player1, char player2) 
 {
+    // Check for draw
     if (player1 == player2) {
-        return 0;  // Draw
+        return 0;
     }
 
+    // Player 1 chooses ROCK
     if (player1 == 'R') {
-        return (player2 == 'S') ? 1 : -1;
+        if (player2 == 'S') {
+            return 1;  // Player 1 wins
+        } else {
+            return -1; // Player 2 wins
+        }
     }
 
+    // Player 1 chooses PAPER
     if (player1 == 'P') {
-        return (player2 == 'R') ? 1 : -1;
+        if (player2 == 'R') {
+            return 1;  // Player 1 wins
+        } else {
+            return -1; // Player 2 wins
+        }
     }
 
+    // Player 1 chooses SCISSORS
     if (player1 == 'S') {
-        return (player2 == 'P') ? 1 : -1;
+        if (player2 == 'P') {
+            return 1;  // Player 1 wins
+        } else {
+            return -1; // Player 2 wins
+        }
     }
 
-    return 0;  
+    // Default return (for unexpected inputs)
+    return 3; 
 }
+
 
 uint8_t get_player2_action(char* player2)
 {
