@@ -1,14 +1,13 @@
-/** @file   ledmat.h
-    @author M. P. Hayes, UCECE
-    @date   23 August 2010
+/** @file   game_display.h
+    @author Rajan Stephens, Katie Ryan
+    @date   11/10/23
     @brief  LED matrix driver.
-
-    @defgroup ledmat LED matrix driver
-       
-    This module implements a simple hardware abstraction of a LED matrix.
+    last edited 19/10/23     
 */
+
 #ifndef DISPLAY_H
 #define DISPLAY_H
+
 
 #include "system.h"
 #include "pio.h"
@@ -18,15 +17,9 @@
 #include "display.h"
 
 
-
-
-
-
 void scroll_text (char* text);
 void step_text (char* text);
 void display_character (char character);
-
-
 
 
 #endif
