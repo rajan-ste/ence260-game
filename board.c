@@ -1,7 +1,7 @@
 /** @file board.c
     @author Katie Ryan, Rajan Stephens
-    @date 11/10/2023
-    @brief display board
+    @date 11/10/23
+    @brief compares actions and select winner
     last edited 19/10/23
 */
 
@@ -9,10 +9,9 @@
 #include "board.h"
 
 
-
 /* Checks to see who won 
-    @param the current microcontrollers symbol
-    @param the sending microcontrollers symbol */
+    @param player1, the current microcontrollers symbol
+    @param player2, the sending microcontrollers symbol */
 int8_t check_winner(char player1, char player2) 
 {
     // Check for draw
@@ -52,9 +51,8 @@ int8_t check_winner(char player1, char player2)
 }
 
 
-
-/* 
-    @param player2, */
+/** Recieves action from microcontroller
+    @param player2, recieves action from other micontroller */
 uint8_t get_player2_action(char* player2)
 {
     if (*player2 == 'P') {
