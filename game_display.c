@@ -31,7 +31,7 @@ static const pio_t ledmat_cols[] =
 
 void scroll_text (char* text)
 {
-    tinygl_font_set (&font3x5_1);
+    tinygl_font_set (&font5x7_1);
     tinygl_text_speed_set (10);
     tinygl_text (text);
     tinygl_text_mode_set (TINYGL_TEXT_MODE_SCROLL);
@@ -41,7 +41,7 @@ void scroll_text (char* text)
 
 void step_text (char* text)
 {
-    tinygl_font_set (&font3x5_1);
+    tinygl_font_set (&font5x7_1);
     tinygl_text_speed_set (10);
     tinygl_text (text);
     tinygl_text_mode_set (TINYGL_TEXT_MODE_STEP);
