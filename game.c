@@ -1,8 +1,8 @@
 /** @file game.c
     @author Katie Ryan, Rajan Stephens
     @date 11/10/2023
-    @brief main file
-    last edited 19/10/23
+    @brief run the game
+    last edited 19/10/2023
 */
 
 
@@ -18,9 +18,15 @@
 #define SELECT 1
 #define PROCESS 8
 #define READ 9
+#define END 6
 #define PACER_RATE 1000
 #define TINYGL_RATE 1000
 #define DEFAULT 7
+#define LOSER 'L'
+#define WINNER 'W'
+#define DRAW 'D'
+
+
 
 
 typedef struct {
@@ -30,18 +36,18 @@ typedef struct {
 } state_t;
 
 state_t state = {
-    START,
+    START, // game starts in start mode
     PAPER, // player 1 defaults to paper
     DEFAULT, // dont set player2 action to anything yet
 };
-
-
 
 /* Scrolls the start menu text until the player presses start
     @param state points to state object */
 static void start_menu(state_t* state) 
 {   
+    // scroll the start menu display text
     tinygl_update();
+    // checking for navswitch press
     navswitch_update();
    
 
@@ -50,52 +56,55 @@ static void start_menu(state_t* state)
         step_text(""); // change tinygl to step
         tinygl_clear();
     }
+
 }
 
 
 
-/* Selects Current Action
-    @param state points to current action*/
+
+/* */
 static void move_selector(state_t* state)
 {
     navswitch_update();
     tinygl_update();
    
+   
 
     // display P and set current action to PAPER
     if (navswitch_push_event_p((NAVSWITCH_NORTH))) {
         state->p1_action = PAPER;
-        display_character('P');
+        display_character(PAPER);
+
     }
 
      // display S and set current action to SCISSORS
     if (navswitch_push_event_p(NAVSWITCH_EAST)) {
         state->p1_action = SCISSORS;
-        display_character('S');
+        display_character(SCISSORS);
     }
+
 
     // display R and set current action to ROCK
     if (navswitch_push_event_p(NAVSWITCH_SOUTH)) {
         state->p1_action = ROCK;
-        display_character('R');
+        display_character(ROCK);
     }
 
     // if other player hasn't sent symbol and button has been pushed
     if (navswitch_push_event_p(NAVSWITCH_PUSH) && !ir_uart_read_ready_p()) {
         if (state->p1_action == ROCK) { 
-            ir_uart_putc('R');
+            // send R for Rock
+            ir_uart_putc(ROCK);
             state->mode = READ;
             tinygl_clear();
         }
-
         if (state->p1_action == PAPER) {
-            ir_uart_putc('P');
+            ir_uart_putc(PAPER);
             state->mode = READ;
             tinygl_clear();
         }
-
         if (state->p1_action == SCISSORS) {
-            ir_uart_putc('S');
+            ir_uart_putc(SCISSORS);
             state->mode = READ;
             tinygl_clear();
         }
@@ -107,19 +116,19 @@ static void move_selector(state_t* state)
         char player2_recv = ir_uart_getc();
         player2 = player2_recv;
 
-        if (player2 == 'P') {
+        if (player2 == PAPER) {
             state->p2_action = PAPER;
             tinygl_clear();
             state->mode = PROCESS;
             
 
-        } else if (player2 == 'S') {
+        } else if (player2 == SCISSORS) {
             state->p2_action = SCISSORS;
             tinygl_clear();
             state->mode = PROCESS;
            
 
-        } else if (player2 == 'R') {
+        } else if (player2 == ROCK) {
             state->p2_action = ROCK;
             tinygl_clear();
             state->mode = PROCESS;
@@ -129,74 +138,60 @@ static void move_selector(state_t* state)
 }
 
 
-
-/* Selects Final Result
-    @param state points to current action */
 void process_mode(state_t* state)
 {
 
     tinygl_update();
-    static uint8_t count = 0;
 
-    if (count == 0) {
+    if (check_winner(state->p1_action, state->p2_action) == 1) {
+        ir_uart_putc(LOSER); // tell the other controller they lost
+        scroll_text("WINNER");
+        
 
-        if (check_winner(state->p1_action, state->p2_action) == 1) {
-            ir_uart_putc('L'); // tell the other controller they lost
-            scroll_text("WINNER");
-            count++;
-           
+    } else if (check_winner(state->p1_action, state->p2_action) == -1) {
+        ir_uart_putc(WINNER); // tell the other microcontroller they won
+        scroll_text("LOSER");
+        
 
-        } else if (check_winner(state->p1_action, state->p2_action) == -1) {
-            ir_uart_putc('W'); // tell the other microcontroller they won
-            scroll_text("LOSER");
-            count++;
-            
+    } else if (check_winner(state->p1_action, state->p2_action) == 0) {
+        ir_uart_putc(DRAW); // tell the other microcontroller they drew
+        scroll_text("DRAW");
+    } 
 
-        } else if (check_winner(state->p1_action, state->p2_action) == 0) {
-            ir_uart_putc('D'); // tell the other microcontroller they drew
-            scroll_text("DRAW");
-            count++;
-        } 
-
-
-        count++;
-    }
+    state->mode = END;    
+    
 }
     
 
-
-/* Reads Result from Other Microcontroller */
-void read_mode(void)
+void read_mode(state_t* state)
 {
 
     tinygl_update();
-    char result = 'R';
-    static uint8_t count = 0;
+    char result;
 
-    if (ir_uart_read_ready_p() && count == 0) {
+
+    if (ir_uart_read_ready_p()) {
         char result_recv = ir_uart_getc();
         result = result_recv;
 
-        if (result == 'L') {
+        if (result == LOSER) {
             scroll_text("LOSER");
-            count++;
         }
 
-        if (result == 'W') {
+        if (result == WINNER) {
             scroll_text("WINNER");
-            count++;
         } 
 
-        if (result == 'D') {
+        if (result == DRAW) {
             scroll_text("DRAW");
-            count++;
         }
+
+        state->mode = END;
+     
     }
 }
 
 
-
-/* Main Function */
 int main (void)
 {
     // initialise everything
@@ -206,7 +201,6 @@ int main (void)
     ir_uart_init();
     navswitch_init();
     
-
     // start menu display text
     scroll_text("PRESS TO START \0");
 
@@ -217,15 +211,22 @@ int main (void)
             case START :
                 start_menu(&state);
                 break;
+
             case SELECT :
                 move_selector(&state);
                 break;
+
             case PROCESS :
                 process_mode(&state);
                 break;  
+
             case READ :
-                read_mode();
+                read_mode(&state);
                 break; 
+
+            case END :
+                tinygl_update();
+                break;
         }
     }
 }
