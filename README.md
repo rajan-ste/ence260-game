@@ -2,7 +2,7 @@ A two player paper scissors rock game for the UCFK4. Created by Katie Ryan and R
 
 By loading the makefile onto the funkit the game can be played. This is done by using _make program_ in the terminal.
 
-The game starts in a start menu which shows scrolling text "press to start". Once both funkits have pressed the navswitch, the game will move into play mode. Once in select mode each player must select their move:
+The game starts in a start menu which shows scrolling text "press to start". Once both funkits have pressed the navswitch, the game will move into select mode. Once in select mode each player must select their move:
 
 - To choose paper press the navswitch up (north)
 - To choose scissors press the navswitch right (east)
