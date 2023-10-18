@@ -1,3 +1,13 @@
+/** @file gane.c
+    @author Katie Ryan, Rajan Stephens
+    @date 11/10/2023
+    @brief main file
+    last edited 
+*/
+
+
+
+
 #include "../../drivers/avr/system.h"
 #include "select.h"
 #include "game_display.h"
