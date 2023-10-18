@@ -1,7 +1,7 @@
 /** @file   game_display.c
-    @author M. P. Hayes, UCECE
+    @author Rajan Stephens, Katie Ryan
     @date   19/10/2023
-    @brief  Display module
+    @brief  Game Display module
 */
 
 #include "game_display.h"
@@ -9,7 +9,9 @@
 
 
 
-
+/** Scroll text across the screen 
+    using tinygl
+    @param text the text to scroll */
 void scroll_text (char* text)
 {
     tinygl_font_set (&font3x5_1);
@@ -19,7 +21,8 @@ void scroll_text (char* text)
     tinygl_update();
 }
 
-
+/** Step text on the screen
+    @param text text to step */
 void step_text (char* text)
 {
     tinygl_font_set (&font3x5_1);

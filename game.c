@@ -202,7 +202,7 @@ void read_mode(void)
 
 int main (void)
 {
-  
+    // initialise everything
     system_init();
     pacer_init(PACER_RATE);
     tinygl_init (TINYGL_RATE);

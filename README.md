@@ -8,7 +8,7 @@ The game starts in a start menu which shows scrolling text "press to start". Onc
 - To choose scissors press the navswitch right (east)
 - To choose rock press the navswitch down (south)
 
- To confirm the action press the navswitch down to send your choice to the other player. Once both players have selected their action via pushing the navswitch each player's result will be calculated and shown on the respective screen. 
+ To confirm the action push the navswitch down to send your choice to the other player. Once both players have selected their action via pushing the navswitch each player's result will be calculated and shown on the respective screen. 
 
 Like in classic paper scissors rock the logic is as follows, 
 - rock beats scissors
