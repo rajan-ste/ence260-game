@@ -1,15 +1,15 @@
 /** @file   game_display.c
-    @author M. P. Hayes, UCECE
+    @author Rajan Stephens, Katie Ryan
     @date   19/10/2023
     @brief  Display module
 */
 
+
 #include "game_display.h"
 
 
-
-
-
+/* Sets text mode to Scroll 
+    @param text, the text to display */
 void scroll_text (char* text)
 {
     tinygl_font_set (&font3x5_1);
@@ -20,6 +20,8 @@ void scroll_text (char* text)
 }
 
 
+/* Sets text mode to Step 
+    @param text, the text to display */
 void step_text (char* text)
 {
     tinygl_font_set (&font3x5_1);
