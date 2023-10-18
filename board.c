@@ -8,6 +8,9 @@
 #include "board.h"
 
 
+/* Checks to see who won 
+    @param the current microcontrollers symbol
+    @param the sending microcontrollers symbol */
 int8_t check_winner(char player1, char player2) 
 {
     // Check for draw
@@ -19,7 +22,7 @@ int8_t check_winner(char player1, char player2)
     if (player1 == 'R') {
         if (player2 == 'S') {
             return 1;  // Player 1 wins
-        } else {
+        } else if (player2 == 'P') {
             return -1; // Player 2 wins
         }
     }
@@ -28,7 +31,7 @@ int8_t check_winner(char player1, char player2)
     if (player1 == 'P') {
         if (player2 == 'R') {
             return 1;  // Player 1 wins
-        } else {
+        } else if (player2 == 'S') {
             return -1; // Player 2 wins
         }
     }
@@ -37,7 +40,7 @@ int8_t check_winner(char player1, char player2)
     if (player1 == 'S') {
         if (player2 == 'P') {
             return 1;  // Player 1 wins
-        } else {
+        } else if (player2 == 'R') {
             return -1; // Player 2 wins
         }
     }

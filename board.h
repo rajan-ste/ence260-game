@@ -5,11 +5,16 @@
     last edited 
 */
 
-#include "select.h"
+
+#include <stdint.h>
 
 #ifndef BOARD_H
 #define BOARD_H
 
+
+#define PAPER 'P'
+#define SCISSORS 'S'
+#define ROCK 'R'
 
 
 int8_t check_winner(char player1, char player2); 

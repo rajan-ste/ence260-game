@@ -9,36 +9,38 @@
 
 
 #include "../../drivers/avr/system.h"
-#include "select.h"
 #include "game_display.h"
 #include "ir_uart.h"
-#include "../../drivers/display.h"
 #include "board.h"
+#include "navswitch.h"
+#include "pacer.h"
 
 
 #define START 0
 #define SELECT 1
 #define PROCESS 8
 #define READ 9
-#define PACER_RATE 500
-#define TINYGL_RATE 500
+#define PACER_RATE 1000
+#define TINYGL_RATE 1000
 #define DEFAULT 7
 
 
 
 
 typedef struct {
-    uint8_t mode;
-    uint8_t p1_action;
-    uint8_t p2_action;
+    uint8_t mode; // mode the game is in
+    uint8_t p1_action; // the current microcontrollers action
+    uint8_t p2_action; // the other microctrollers action
 } state_t;
 
 state_t state = {
     START,
-    PAPER,
-    DEFAULT,
+    PAPER, // player 1 defaults to paper
+    DEFAULT, // dont set player2 action to anything yet
 };
 
+/* Scrolls the start menu text until the player presses start
+    @param state points to state object */
 static void start_menu(state_t* state) 
 {   
     // scroll the start menu display text
@@ -58,7 +60,7 @@ static void start_menu(state_t* state)
 
 
 
-
+/* */
 static void move_selector(state_t* state)
 {
     navswitch_update();
@@ -86,9 +88,10 @@ static void move_selector(state_t* state)
         display_character('R');
     }
 
-
-    if (navswitch_push_event_p(NAVSWITCH_PUSH)) {
+    // if other player hasn't sent symbol and button has been pushed
+    if (navswitch_push_event_p(NAVSWITCH_PUSH) && !ir_uart_read_ready_p()) {
         if (state->p1_action == ROCK) { 
+            // send R for Rock
             ir_uart_putc('R');
             state->mode = READ;
             tinygl_clear();
@@ -103,12 +106,11 @@ static void move_selector(state_t* state)
             state->mode = READ;
             tinygl_clear();
         }
-
-       
     }
 
-     if (ir_uart_read_ready_p()) {
-        char player2 = 'Z';
+    // if other player has sent symbol and button has been pushed
+     if (ir_uart_read_ready_p() && navswitch_push_event_p(NAVSWITCH_PUSH)) {
+        char player2;
         char player2_recv = ir_uart_getc();
         player2 = player2_recv;
 
@@ -130,10 +132,7 @@ static void move_selector(state_t* state)
             state->mode = PROCESS;
 
         }
-        
-    
     }
-
 }
 
 void process_mode(state_t* state)
@@ -146,56 +145,55 @@ void process_mode(state_t* state)
 
         if (check_winner(state->p1_action, state->p2_action) == 1) {
             ir_uart_putc('L'); // tell the other controller they lost
-            // scroll_text("WINNER");
-            display_character('W');
+            scroll_text("WINNER");
             count++;
            
 
         } else if (check_winner(state->p1_action, state->p2_action) == -1) {
             ir_uart_putc('W'); // tell the other microcontroller they won
-            // scroll_text("LOSER");
-            display_character('L');
+            scroll_text("LOSER");
             count++;
             
 
         } else if (check_winner(state->p1_action, state->p2_action) == 0) {
             ir_uart_putc('D'); // tell the other microcontroller they drew
-            // scroll_text("DRAW");
-            display_character('D');
+            scroll_text("DRAW");
             count++;
         } 
 
         count++;
+        
     }
-
 }
     
 
 
-void read_mode(state_t* state)
+void read_mode(void)
 {
 
     tinygl_update();
     char result = 'R';
+    static uint8_t count = 0;
 
-    if (ir_uart_read_ready_p()) {
+    if (ir_uart_read_ready_p() && count == 0) {
         char result_recv = ir_uart_getc();
         result = result_recv;
 
         if (result == 'L') {
-            // scroll_text("LOSER");
-            display_character('L');
+            scroll_text("LOSER");
+            count++;
         }
 
         if (result == 'W') {
-            // scroll_text("WINNER");
-            display_character('W');
+            scroll_text("WINNER");
+            count++;
         } 
 
         if (result == 'D') {
-            // scroll_text("DRAW");
-            display_character('D');
+            scroll_text("DRAW");
+            count++;
         }
+     
     }
 }
 
@@ -230,7 +228,7 @@ int main (void)
                 process_mode(&state);
                 break;  
             case READ :
-                read_mode(&state);
+                read_mode();
                 break; 
         }
     }
