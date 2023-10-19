@@ -1,4 +1,4 @@
-/** @file board.c
+/** @file compare.c
     @author Katie Ryan, Rajan Stephens
     @date 11/10/23
     @brief compares actions and select winner
@@ -6,7 +6,7 @@
 */
 
 
-#include "board.h"
+#include "compare.h"
 
 
 /* Checks to see who won 
