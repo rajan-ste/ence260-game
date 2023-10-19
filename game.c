@@ -6,7 +6,7 @@
 */
 
 
-#include "../../drivers/avr/system.h"
+#include "system.h"
 #include "game_display.h"
 #include "ir_uart.h"
 #include "board.h"
@@ -27,13 +27,12 @@
 #define DRAW 'D'
 
 
-
-
 typedef struct {
     uint8_t mode; // mode the game is in
     uint8_t p1_action; // the current microcontrollers action
     uint8_t p2_action; // the other microctrollers action
 } state_t;
+
 
 state_t state = {
     START, // game starts in start mode
@@ -41,40 +40,40 @@ state_t state = {
     DEFAULT, // dont set player2 action to anything yet
 };
 
-/* Scrolls the start menu text until the player presses start
+
+/** Scrolls the start menu text until the player presses start
     @param state points to state object */
 static void start_menu(state_t* state) 
 {   
     // scroll the start menu display text
     tinygl_update();
+
     // checking for navswitch press
     navswitch_update();
    
-
     if (navswitch_push_event_p(NAVSWITCH_PUSH)) {
-        state->mode = SELECT; // change mode to select
-        step_text(""); // change tinygl to step
+        // change mode to select
+        state->mode = SELECT;
+        // change tinygl to step
+        step_text(""); 
         tinygl_clear();
     }
-
 }
 
 
-
-
-/* */
+/** choose your action, first person to press
+    the navswitch sends their symbol to the other
+    controller.
+    @param state a pointer to the game state */
 static void move_selector(state_t* state)
 {
     navswitch_update();
     tinygl_update();
-   
-   
 
     // display P and set current action to PAPER
     if (navswitch_push_event_p((NAVSWITCH_NORTH))) {
         state->p1_action = PAPER;
         display_character(PAPER);
-
     }
 
      // display S and set current action to SCISSORS
@@ -82,7 +81,6 @@ static void move_selector(state_t* state)
         state->p1_action = SCISSORS;
         display_character(SCISSORS);
     }
-
 
     // display R and set current action to ROCK
     if (navswitch_push_event_p(NAVSWITCH_SOUTH)) {
@@ -93,7 +91,7 @@ static void move_selector(state_t* state)
     // if other player hasn't sent symbol and button has been pushed
     if (navswitch_push_event_p(NAVSWITCH_PUSH) && !ir_uart_read_ready_p()) {
         if (state->p1_action == ROCK) { 
-            // send R for Rock
+            // send current action
             ir_uart_putc(ROCK);
             state->mode = READ;
             tinygl_clear();
@@ -113,45 +111,44 @@ static void move_selector(state_t* state)
     // if other player has sent symbol and button has been pushed
      if (ir_uart_read_ready_p() && navswitch_push_event_p(NAVSWITCH_PUSH)) {
         char player2;
+        // receive what action the other controller sent
         char player2_recv = ir_uart_getc();
         player2 = player2_recv;
 
+        // error checks
         if (player2 == PAPER) {
             state->p2_action = PAPER;
             tinygl_clear();
             state->mode = PROCESS;
-            
 
         } else if (player2 == SCISSORS) {
             state->p2_action = SCISSORS;
             tinygl_clear();
             state->mode = PROCESS;
            
-
         } else if (player2 == ROCK) {
             state->p2_action = ROCK;
             tinygl_clear();
             state->mode = PROCESS;
-
         }
     }
 }
 
 
+/** determine who won and send result to other 
+    controller and display it
+    @param state pointer to game state */
 void process_mode(state_t* state)
 {
-
     tinygl_update();
 
     if (check_winner(state->p1_action, state->p2_action) == 1) {
         ir_uart_putc(LOSER); // tell the other controller they lost
         scroll_text("WINNER");
-        
 
     } else if (check_winner(state->p1_action, state->p2_action) == -1) {
         ir_uart_putc(WINNER); // tell the other microcontroller they won
         scroll_text("LOSER");
-        
 
     } else if (check_winner(state->p1_action, state->p2_action) == 0) {
         ir_uart_putc(DRAW); // tell the other microcontroller they drew
@@ -159,16 +156,18 @@ void process_mode(state_t* state)
     } 
 
     state->mode = END;    
-    
 }
-    
 
+
+/** Receive the result of the game from
+    the other controller and display it
+    @param state pointer to game state */
 void read_mode(state_t* state)
 {
-
     tinygl_update();
-    char result;
 
+    // read in the result to a char
+    char result; 
 
     if (ir_uart_read_ready_p()) {
         char result_recv = ir_uart_getc();
@@ -187,7 +186,6 @@ void read_mode(state_t* state)
         }
 
         state->mode = END;
-     
     }
 }
 
