@@ -1,4 +1,4 @@
-/** @file board.h
+/** @file compare.h
     @author Katie Ryan, Rajan Stephens
     @date 11/10/2023
     @brief compares actions and select winner
@@ -9,8 +9,8 @@
 #include <stdint.h>
 
 
-#ifndef BOARD_H
-#define BOARD_H
+#ifndef COMPARE_H
+#define COMPARE_H
 
 
 #define PAPER 'P'
