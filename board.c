@@ -51,19 +51,3 @@ int8_t check_winner(char player1, char player2)
 }
 
 
-/** Recieves action from microcontroller
-    @param player2, recieves action from other micontroller */
-uint8_t get_player2_action(char* player2)
-{
-    if (*player2 == 'P') {
-        return PAPER;
-
-    } else if (*player2 == 'S') {
-        return SCISSORS;
-
-    } else if (*player2 == 'R') {
-        return ROCK;
-
-    }
-    return 0;
-}
