@@ -16,10 +16,6 @@
 #include "display.h"
 
 
-
-
-
-
 /** Scroll text across the screen using tinygl
     @param text, the text to scroll */
 void scroll_text (char* text);
@@ -33,8 +29,6 @@ void step_text (char* text);
 /** Flash a single character onto the screen:
     @param character, the character to display */
 void display_character (char character);
-
-
 
 
 #endif

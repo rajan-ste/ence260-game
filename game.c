@@ -6,10 +6,9 @@
 */
 
 
-#include "system.h"
 #include "game_display.h"
 #include "ir_uart.h"
-#include "board.h"
+#include "compare.h"
 #include "navswitch.h"
 #include "pacer.h"
 
@@ -70,9 +69,13 @@ static void move_selector(state_t* state)
     navswitch_update();
     tinygl_update();
 
+    // static to display P before someting is pressed
+    static uint8_t count = 0;
+
     // display P and set current action to PAPER
-    if (navswitch_push_event_p((NAVSWITCH_NORTH))) {
+    if (navswitch_push_event_p((NAVSWITCH_NORTH)) || count == 0) {
         state->p1_action = PAPER;
+        count++;
         display_character(PAPER);
     }
 
